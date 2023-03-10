@@ -58,17 +58,18 @@ The function can iterate through a set number of times or indefinitely.
 [1, 3, 2, 4, 6], Period = 3, Repeat = False: This would cause the variable to take 
 on the values 1, 3, 2, 4, 6, 1, 3, 2, 4, 6, 1, 3, 2, 4, 6 and then stop on 6. 
 Having Repeat=True discards any value period
+### XML Function Element
 
 ## WeightedList
 This function takes a random sample from a list created from a value and weight lists.
 If the values is [v_1, v_2, ..., v_n] and the weight list is [w_1, w_2, ..., w_n], 
 then the random sample is take from w_1 copies of v_1, w_2 copies of v_2, ..., 
 and w_n copies of v_n. Note that the weight list must be integers.
-## Example
+### Example
 values = [1, 4, 5] and weights = [9, 2, 1]. The random sample is taken from
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5]. Thus the probability of 1 is 3/4, probability
 of 4 is 1/6, and 5 is 1/12.
-## XML Function Element
+### XML Function Element
 The XML function element "weightedlist" must contain:
 * type = 'weightedlist'
 * timer = name of timer 
