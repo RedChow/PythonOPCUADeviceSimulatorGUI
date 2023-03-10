@@ -36,8 +36,19 @@ the OPC browser.
 You can drag and drop the items into your tags folder
 ![Tag Browser](images/home_automation_3.png)
 
+# Timers
+Each variable in the program has a timer associated with it. A timer fires either
+after a set amount of time every time, called *periodic*, or a random amount of time
+between give low and high values called *random.*
+
+When a timer fires, it evaluates all functions that are associated with it.
+
+For example, a random timer with min 2.5 and max 80, can be called at any millisecond
+values between 250 ms and 80,000 ms. A periodic timer with timeout set to 2 will fire
+every 2 seconds.
+
 # Functions
-The following functions can be used to simulate values.
+Every variable has
 
 ## ValueList
 This function takes a list of values and then iterates through the list in order.
@@ -48,8 +59,18 @@ on the values 1, 3, 2, 4, 6, 1, 3, 2, 4, 6, 1, 3, 2, 4, 6 and then stop on 6.
 Having Repeat=True discards any value period
 
 ## WeightedList
+This function takes a random sample from a list created from a value and weight lists.
+If the values is [v_1, v_2, ..., v_n] and the weight list is [w_1, w_2, ..., w_n], 
+then the random sample is take from w_1 copies of v_1, w_2 copies of v_2, ..., 
+and w_n copies of v_n. Note that the weight list must be integers.
+## Example
+values = [1, 4, 5] and weights = [9, 2, 1]. The random sample is take from
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5]. Thus the probability of 1 is 3/4, probability
+of 4 is 1/6, and 5 is 1/12.
 
 ## RampStep
+The variable increments the same given value every time its associated timer
+fires.
 
 ## RampPeriodic
 
