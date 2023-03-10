@@ -1,0 +1,134 @@
+<?xml version="1.0" ?>
+<simulator>
+	<timers>
+		<timer>
+			<name>MyName</name>
+			<type>random</type>
+			<min>3</min>
+			<max>5</max>
+		</timer>
+		<timer>
+			<name>Periodic5sec</name>
+			<type>periodic</type>
+			<timeout>20</timeout>
+		</timer>
+	</timers>
+	<device name="maiden1">
+		<folder name="M300">
+			<folder name="P1000">
+				<variable>
+					<name>Pressure</name>
+					<datatype>Int16</datatype>
+					<timer>MyName</timer>
+					<function>
+						<type>rampperiodic</type>
+						<min>2</min>
+						<max>20000</max>
+						<period>300</period>
+						<repeat>True</repeat>
+						<historize>True</historize>
+					</function>
+				</variable>
+				<variable>
+					<name>Flow</name>
+					<datatype>float</datatype>
+					<timer>Periodic5sec</timer>
+					<function>
+						<type>cos</type>
+						<min>200</min>
+						<max>2000</max>
+						<period>300</period>
+						<repeat>True</repeat>
+						<historize>True</historize>
+					</function>
+				</variable>
+				<folder name="Alarms">
+						<variable>
+							<name>FlowAlarm</name>
+							<datatype>boolean</datatype>
+							<timer>Periodic5sec</timer>
+							<function>
+								<type>randomsquare</type>
+								<min>0</min>
+								<max>1</max>
+								<period>300</period>
+								<repeat>True</repeat>
+								<historize>True</historize>
+							</function>
+					</variable>
+				</folder>
+			</folder>
+			<folder name="P2000">
+				<variable>
+					<name>Pressure</name>
+					<datatype>Int16</datatype>
+					<timer>MyName</timer>
+					<function>
+						<type>rampperiodic</type>
+						<min>2</min>
+						<max>20000</max>
+						<period>300</period>
+						<repeat>True</repeat>
+						<historize>True</historize>
+					</function>
+				</variable>
+				<variable>
+					<name>Flow</name>
+					<datatype>float</datatype>
+					<timer>Periodic5sec</timer>
+					<function>
+						<type>cos</type>
+						<min>200</min>
+						<max>2000</max>
+						<period>300</period>
+						<repeat>True</repeat>
+						<historize>True</historize>
+					</function>
+				</variable>
+			</folder>
+			<variable>
+				<name>LinePressure</name>
+				<datatype>float</datatype>
+				<timer>Periodic5sec</timer>
+				<function>
+					<type>cos</type>
+					<min>200</min>
+					<max>2000</max>
+					<period>300</period>
+					<repeat>True</repeat>
+					<historize>True</historize>
+				</function>
+			</variable>
+		</folder>
+		<variable>
+			<name>Pressure</name>
+			<datatype>double</datatype>
+			<timer>MyName</timer>
+			<function>
+				<type>cos</type>
+				<min>200</min>
+				<max>2000</max>
+				<period>300</period>
+				<repeat>True</repeat>
+				<historize>True</historize>
+			</function>
+		</variable>
+	</device>
+	<device name="maiden2">
+		<folder name="M300">
+			<variable>
+				<name>HighFlowAlarm</name>
+				<datatype>boolean</datatype>
+				<timer>Periodic5sec</timer>
+				<function>
+					<type>weightedlist</type>
+					<values>[0, 1]</values>
+					<weights>[9, 1]</weights>
+					<period>300</period>
+					<repeat>True</repeat>
+					<historize>True</historize>
+				</function>
+			</variable>
+		</folder>
+	</device>
+</simulator>
