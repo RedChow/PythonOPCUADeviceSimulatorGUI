@@ -120,12 +120,11 @@ class ValueList(ValueFunction):
             self.device.set_value(self.path, v)
         # if we've taken the last one and are set to repeat, set up the deque for the next call
         if len(self.deque) == 0:
-            if self.repeat:
-                if self.period < 0:
-                    self.deque = deque(self.values)
-                elif self.repeated_times < self.period:
-                    self.deque = deque(self.values)
-                    self.repeated_times += 1
+            if self.repeat or self.repeated_times < self.period:
+                self.deque = deque(self.values)
+                self.repeated_times += 1
+                if self.repeated_times >= self.period:
+                    self.repeated_times = 0
 
 
 class Triangle(ValueFunction):
