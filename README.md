@@ -107,7 +107,11 @@ of "simulator." Each "device" element must contain
 * datatype
 * timer (timer name must be listed in the timers section)
 * function
+
 The function element contains many sub-elements that depend on the function used.
+The required elements are listed above in the "XML Function Element" section of
+each function.
+
 
 # Future Plans
 
