@@ -64,7 +64,7 @@ If the values is [v_1, v_2, ..., v_n] and the weight list is [w_1, w_2, ..., w_n
 then the random sample is take from w_1 copies of v_1, w_2 copies of v_2, ..., 
 and w_n copies of v_n. Note that the weight list must be integers.
 ## Example
-values = [1, 4, 5] and weights = [9, 2, 1]. The random sample is take from
+values = [1, 4, 5] and weights = [9, 2, 1]. The random sample is taken from
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5]. Thus the probability of 1 is 3/4, probability
 of 4 is 1/6, and 5 is 1/12.
 
