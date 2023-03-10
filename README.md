@@ -48,7 +48,8 @@ values between 250 ms and 80,000 ms. A periodic timer with timeout set to 2 will
 every 2 seconds.
 
 # Functions
-Every variable has
+Every variable has function defined for it. The following list are all the 
+available functions for variables. There are plans to add more functions.
 
 ## ValueList
 This function takes a list of values and then iterates through the list in order.
@@ -67,6 +68,17 @@ and w_n copies of v_n. Note that the weight list must be integers.
 values = [1, 4, 5] and weights = [9, 2, 1]. The random sample is taken from
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5]. Thus the probability of 1 is 3/4, probability
 of 4 is 1/6, and 5 is 1/12.
+## XML Function Element
+The XML function element "weightedlist" must contain:
+* type = 'weightedlist'
+* timer = name of timer 
+* values = list of values in brackets [] (might have a different name in your 
+country)
+* weights = list of values in brackets [] (might have a different name in your 
+country)
+* period = number of times the random sample should be taken; if repeat set to 
+True, random sample will be taken indefinitely
+* repeat = True means repeat indefinitely, False means stop after period
 
 ## RampStep
 The variable increments the same given value every time its associated timer
@@ -83,9 +95,20 @@ fires.
 ## Sin
 
 ## Cos
+
 # Device XML Structure
+The base tag is "simulator." The sub-element "timers" contains all the definitions
+for timers that are to be used for the variables.
 
+The next sub-elements are "device." There can be 1 or many "device" sub-elements
+of "simulator." Each "device" element must contain 
+* name
+* datatype
+* timer (timer name must be listed in the timers section)
+* function
+The function element contains many sub-elements that depend on the function used.
 
+# Future Plans
 
 ## Disclaimer
 This still needs a lot of work. The GUI is operational and allows for adding/deleting 
