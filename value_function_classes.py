@@ -160,6 +160,7 @@ class WeightedList(ValueFunction):
         if self.times_evaluated > self.period:
             if not self.repeat:
                 return
+            self.times_evaluated = 0
         self.device.set_value(self.path, random.choice(self.choice_list))
 
 
