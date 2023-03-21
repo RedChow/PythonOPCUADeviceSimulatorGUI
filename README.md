@@ -43,7 +43,7 @@ between give low and high values called *random.*
 
 When a timer fires, it evaluates all functions that are associated with it.
 
-For example, a random timer with min 2.5 and max 80, can be called at any millisecond
+For example, a random timer with min 2.5 and max 80, can be called at any 
 values between 250 ms and 80,000 ms. A periodic timer with timeout set to 2 will fire
 every 2 seconds.
 
