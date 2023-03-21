@@ -94,6 +94,7 @@ fires.
 ## Triangle
 
 ## Sin
+Makes use of the sin function.
 
 ## Cos
 
