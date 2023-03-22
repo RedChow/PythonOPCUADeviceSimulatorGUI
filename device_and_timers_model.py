@@ -179,6 +179,8 @@ class TimersModel(QAbstractTableModel):
             elif timer_type == 'periodic':
                 if index.column() in [0, 1, 4]:
                     return self.timer_data[index.row()][index.column()]
+                #elif index.column() == 4:
+                #    return float(self.timer_data[index.row()][4])/1000
                 return ''
         elif role == Qt.BackgroundRole:
             timer_type = self.timer_data[index.row()][1]
@@ -225,6 +227,8 @@ class TimersModel(QAbstractTableModel):
             if index.column() == 0:
                 self.timer_data[index.row()][0] = value
                 self.timer_changed.emit(index.row())
+            else:
+                self.timer_data[index.row()][index.column()] = value
         return True
 
     def add_timer(self):
@@ -268,7 +272,7 @@ class TimerDelegate(QStyledItemDelegate):
     def setEditorData(self, editor, index):
         text = index.model().data(index, Qt.DisplayRole)
         if index.column() in [0, 2, 3, 4]:
-            editor.setText(text)
+            editor.setText(f'{text}')
         elif index.column() in [1]:
             i = editor.findText(text)
             if i == -1:
@@ -276,5 +280,7 @@ class TimerDelegate(QStyledItemDelegate):
             editor.setCurrentIndex(i)
 
     def setModelData(self, editor, model, index) -> None:
-        if index.column() == 0:
+        if index.column() in [0, 2, 3, 4]:
             model.setData(index, editor.text())
+        elif index.column() == 1:
+            model.setData(index, editor.currentText())

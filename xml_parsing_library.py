@@ -85,9 +85,10 @@ class XMLParser:
                 return
         elif timer_type == 'periodic':
             try:
-                timer_timeout = int(float(node.findall('timeout')[0].text)) * 1000
+                timer_timeout = int(float(node.findall('timeout')[0].text))
                 timer_data.extend([0, 0, timer_timeout])
                 if self.opcua_server is not None:
+                    timer_timeout = timer_timeout*1000
                     qtimer = timer_class.OPCTimer(None)
                     qtimer.set_name(timer_name)
                     qtimer.set_timer_type(timer_type)

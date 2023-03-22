@@ -14,8 +14,9 @@ class MainWindow(QMainWindow):
         self.timers_model = None
         self.device_model = None
         self.timer_names = []
-        self.load_data()
+        # self.load_data()
         self.ui.actionSave_to_File.triggered.connect(self.save_to_file)
+        self.ui.actionOpen_File.triggered.connect(self.load_data)
         self.ui.pushButtonAddVariable.pressed.connect(self.add_variable)
         self.ui.pushButtonAddTimer.pressed.connect(self.add_timer)
 
@@ -78,10 +79,12 @@ class MainWindow(QMainWindow):
         message_box.exec()
 
     def load_data(self):
+        file_name = QFileDialog.getOpenFileName(self, "Open File", ".", "XML (*.xml)")[0]
+        if not file_name:
+            return
         xpl = xml_parsing_library.XMLParser(None)
-        xpl.parse_file('./devices_and_timers/SNF2.xml')
+        xpl.parse_file(file_name)
         self.device_model = device_and_timers_model.DevicesModel(xpl.device_model_data)
-        print(xpl.device_model_data)
         self.ui.tableViewDevices.setModel(self.device_model)
         self.timer_names = [x[0] for x in xpl.timer_model_data]
         self.ui.tableViewDevices.setItemDelegate(device_and_timers_model.DeviceDelegate(self))
