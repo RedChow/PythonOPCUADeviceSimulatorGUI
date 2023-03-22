@@ -159,7 +159,7 @@
 				<repeat>True</repeat>
 				<historize>True</historize>
 			</function>
-			<path>maiden3</path>
+			<path></path>
 		</variable>
 	</device>
 </simulator>

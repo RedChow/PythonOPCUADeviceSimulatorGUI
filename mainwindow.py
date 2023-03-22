@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
             message_box.setText("Server has not been started. Start server before adding variables.")
             message_box.show()
             return
-        file_names = QFileDialog.getOpenFileNames(self, "Open Directory", ".", "XML Files (*.xml)")
+        file_names = QFileDialog.getOpenFileNames(self, "Open File(s)", ".", "XML Files (*.xml)")
         if file_names:
             for file_name in file_names[0]:
                 self.populate_variable_treeview(file_name, False)

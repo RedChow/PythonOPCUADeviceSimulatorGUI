@@ -221,9 +221,16 @@ class XMLParser:
 
         try:
             path_tag = node.findall('path')[0].text
+            path_base = path_tag.split('/')[0]
         except IndexError:
             pass
+        except AttributeError:
+            path_base = ''
+            path_tag = ''
         else:
+            base_path = root_path.split('/')[0]
+            if path_base != base_path:
+                path_tag = base_path + '/' + path_tag
             root_path = path_tag
         if self.opcua_server is not None:
             self.parse_and_create_function(next_node, variable_name, variable_datatype_ua, variable_timer, root_path)
@@ -281,8 +288,61 @@ class XMLParser:
 
 
 class XMLCreator:
-    def __init__(self):
-        self.pathname = ''
+    def __init__(self, full_path):
+        self.pathname = full_path
 
-    def write_data(self, data):
-        pass
+    def write_data_to_file(self, timers, devices):
+        """
+        :param timers:
+            list of dictionaries that have keys 'name', 'type', and either 'timeout' or 'min' and 'max'
+        :param devices:
+            list dictionaries with keys 'name' and 'variables'
+            NOTE: 'variables' is a dictionary with keys 'path', 'function', 'datatype', 'timer', 'func_arg_1',
+                'func_arg_2', 'func_arg_3', 'func_arg_4', 'func_arg_5'
+                The func_arg_n will depend on the function.
+        :return:
+            True if file was written with no exceptions
+            False otherwise
+        """
+        document = etree.Element("simulator")
+        sub_element_timers = etree.SubElement(document, "timers")
+        for timer in timers:
+            timer_element = etree.SubElement(sub_element_timers, "timer")
+            for key in timer:
+                key_sub_element = etree.SubElement(timer_element, key)
+                key_sub_element.text = f"{timer[key]}"
+
+        for device in devices:
+            try:
+                device_element = etree.SubElement(document, "device")
+                device_element.set("name", device["name"])
+                for variable in device["variables"]:
+                    v = etree.SubElement(device_element, "variable")
+                    if v is not None:
+                        path_parts = variable['path'].split('/')
+                        v_name = etree.SubElement(v, "name")
+                        v_name.text = path_parts[-1]
+                        v_datatype = etree.SubElement(v, "datatype")
+                        v_datatype.text = variable['datatype']
+                        v_timer = etree.SubElement(v, "timer")
+                        v_timer.text = variable['timer']
+                        v_path = etree.SubElement(v, "path")
+                        v_path.text = '/'.join(path_parts[:-1])
+                        function_element = etree.SubElement(v, "function")
+                        function_type = etree.SubElement(function_element, "type")
+                        function_type.text = variable['function']
+                        value_function = value_function_classes.ValueFunction(None, None, None, None, None)
+                        func_dict = value_function.get_function_list(variable['function'])
+                        for func_arg in func_dict:
+                            func_element = etree.SubElement(function_element, f"{func_dict[func_arg]}")
+                            func_element.text = f"{variable[func_arg]}"
+            except KeyError:
+                return False
+        try:
+            root = etree.ElementTree(document)
+            root.write(f'{self.pathname}', pretty_print=True, xml_declaration=True, encoding="utf-8")
+        except Exception as e:
+            logger.error(f"Error writing to {self.pathname}. Error message: {e.message}")
+            return False
+        else:
+            return True

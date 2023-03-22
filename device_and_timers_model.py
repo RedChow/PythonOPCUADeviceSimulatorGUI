@@ -20,6 +20,8 @@ class DevicesModel(QAbstractTableModel):
 
     def data(self, index, role: int = ...):
         if role == Qt.DisplayRole:
+            if index.column() == 2:
+                return self.devices_data[index.row()][index.column()].name
             return self.devices_data[index.row()][index.column()]
         elif role == Qt.ToolTipRole:
             if index.column() == 4:
@@ -85,7 +87,9 @@ class DevicesModel(QAbstractTableModel):
 
     def setData(self, index, value, role: int = ...) -> bool:
         if index.isValid() and 0 <= index.row() < len(self.devices_data):
-            if index.column() in range(0, 11):
+            if index.column() == 2:
+                self.devices_data[index.row()][index.column()] = data_types.data_types[value]
+            else:
                 self.devices_data[index.row()][index.column()] = value
         return True
 

@@ -1,12 +1,9 @@
-import xml.dom.minidom
 import device_and_timers_model
-from operator import itemgetter
 import sys
 import xml_parsing_library
 from ui_devices_and_timers_mainwindow import Ui_DevicesAndTimersMainWindow
 
-from PySide6.QtWidgets import QApplication, QDialog, QMainWindow, QMessageBox, QPushButton, QDialog, QHeaderView
-import PySide6.QtGui
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 
 
 class MainWindow(QMainWindow):
@@ -33,6 +30,13 @@ class MainWindow(QMainWindow):
             self.ui.tableViewDevices.model().layoutChanged.emit()
 
     def save_to_file(self):
+        file_name_parts = QFileDialog.getSaveFileName(self, "Save As", ".", "XML Files (*.xml)")
+        if not file_name_parts[0]:
+            return
+        file_name = file_name_parts[0]
+        if not file_name.endswith('.xml'):
+            file_name = file_name_parts[0] + '.xml'
+        xml_writer = xml_parsing_library.XMLCreator(file_name)
         timer_data = []
         for timer in self.timers_model.timer_data:
             if not timer[0] and not timer[1]:
@@ -44,7 +48,6 @@ class MainWindow(QMainWindow):
             elif timer_dict['type'] == 'periodic':
                 timer_dict['timeout'] = timer[4]
             timer_data.append(timer_dict)
-        print(timer_data)
         device_data = []
         device = {}
         for row in self.device_model.devices_data:
@@ -63,16 +66,22 @@ class MainWindow(QMainWindow):
                 device_data.append(device)
             else:
                 device = device_data[i]
-            device['variables'].append({'path': row[0].replace(device_name + '/', '') + '/' + row[1], 'function': row[4],
-                                        'datatype': row[2], 'timer': row[3], 'func_arg_1': row[5],
+            device['variables'].append({'path': row[0].replace(device_name + '/', '') + '/' + row[1],
+                                        'function': row[4], 'datatype': row[2].name.lower(), 'timer': row[3], 'func_arg_1': row[5],
                                         'func_arg_2': row[6], 'func_arg_3': row[7], 'func_arg_4': row[8],
                                         'func_arg_5': row[9]})
-        print(device_data)
+        message = "There was an error writing the document. Please check the logs for more information."
+        if xml_writer.write_data_to_file(timer_data, device_data):
+            message = "Document was successfully written."
+        message_box = QMessageBox()
+        message_box.setText(message)
+        message_box.exec()
 
     def load_data(self):
         xpl = xml_parsing_library.XMLParser(None)
         xpl.parse_file('./devices_and_timers/SNF2.xml')
         self.device_model = device_and_timers_model.DevicesModel(xpl.device_model_data)
+        print(xpl.device_model_data)
         self.ui.tableViewDevices.setModel(self.device_model)
         self.timer_names = [x[0] for x in xpl.timer_model_data]
         self.ui.tableViewDevices.setItemDelegate(device_and_timers_model.DeviceDelegate(self))
