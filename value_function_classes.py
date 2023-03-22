@@ -83,6 +83,14 @@ class ValueFunction:
                 'func_arg_4': 'repeat',
                 'func_arg_5': 'historize'
             }
+        elif function_type == 'ramprandom':
+            return {
+                'func_arg_1': 'min',
+                'func_arg_2': 'max',
+                'func_arg_3': 'bounds',
+                'func_arg_4': 'repeat',
+                'func_arg_5': 'historize'
+            }
         elif function_type in ['triangle', 'rampperiodic', 'square', 'randomsquare', 'sin', 'cos']:
             return {
                 'func_arg_1': 'min',
@@ -97,7 +105,7 @@ class ValueFunction:
     @staticmethod
     def functions():
         return sorted(['valuelist', 'weightedlist', 'rampstep', 'triangle', 'rampperiodic', 'square', 'randomsquare',
-                       'sin', 'cos'])
+                       'sin', 'cos', 'ramprandom'])
 
 
 class ValueList(ValueFunction):
@@ -181,6 +189,36 @@ class RampStep(ValueFunction):
             return
 
         self.device.set_value(self.path, v + self.period)
+
+
+class RampRandom(ValueFunction):
+    """
+    NOTES: period acts as the step value
+    """
+    def __init__(self, device, path, y_min, y_max, period, bounds, repeat=True, historize=False):
+        super().__init__(device, path, y_min, y_max, period, repeat, historize)
+        # print(self.path, self.device)
+        self.lower_bound = 1
+        self.upper_bound = 2
+        try:
+            self.lower_bound = bounds[0]
+            self.upper_bound = bounds[1]
+        except TypeError:
+            pass
+        except IndexError:
+            pass
+
+    def evaluate(self):
+        v = self.device.get_value(self.path)
+        noise = random.randrange(self.lower_bound, self.upper_bound)
+        new_value = v + noise
+        if new_value > self.y_max:
+            if not self.repeat:
+                return
+            self.device.set_value(self.path, self.y_min)
+            return
+
+        self.device.set_value(self.path, new_value)
 
 
 class RampPeriodic(ValueFunction):

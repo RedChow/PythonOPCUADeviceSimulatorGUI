@@ -185,6 +185,11 @@ class XMLParser:
                                                      period,
                                                      repeat,
                                                      historize)
+            elif function_type == 'ramprandom':
+                f = value_function_classes.RampRandom(self.opc_device, v_path, float(function_parameters['min']),
+                                                      float(function_parameters['max']), 0,
+                                                      ast.literal_eval(function_parameters['bounds']), repeat,
+                                                      historize)
         except ValueError:
             logger.warning(f"Error in parsing function for {variable_name} in file {self.pathname}. Variable will not"
                            f"be used.")
@@ -211,7 +216,15 @@ class XMLParser:
         try:
             next_node = node.findall('function')[0]
         except IndexError:
+            logger.error(f"No function tag for {variable_name} in {root_path}. Will not add variable.")
             return
+
+        try:
+            path_tag = node.findall('path')[0].text
+        except IndexError:
+            pass
+        else:
+            root_path = path_tag
         if self.opcua_server is not None:
             self.parse_and_create_function(next_node, variable_name, variable_datatype_ua, variable_timer, root_path)
             """

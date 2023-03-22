@@ -131,4 +131,35 @@
 			</variable>
 		</folder>
 	</device>
+	<device name="maiden3">
+		<variable>
+			<name>LowFlowAlarm</name>
+			<datatype>boolean</datatype>
+			<timer>Periodic5sec</timer>
+			<function>
+					<type>weightedlist</type>
+					<values>[0, 1]</values>
+					<weights>[9, 1]</weights>
+					<period>300</period>
+					<repeat>True</repeat>
+					<historize>True</historize>
+			</function>
+			<path>maiden3/alarms</path>
+		</variable>
+		<variable>
+			<name>Pressure</name>
+			<datatype>Int16</datatype>
+			<timer>MyName</timer>
+			<function>
+				<type>ramprandom</type>
+				<min>2</min>
+				<max>20000</max>
+				<bounds>[25, 125]</bounds>
+				<period>300</period>
+				<repeat>True</repeat>
+				<historize>True</historize>
+			</function>
+			<path>maiden3</path>
+		</variable>
+	</device>
 </simulator>
