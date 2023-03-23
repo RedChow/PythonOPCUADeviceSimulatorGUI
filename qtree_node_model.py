@@ -25,6 +25,7 @@ from math import modf
 
 class OPCUAInfoNode:
     def __init__(self, data):
+        # [name, variable, timer, '']
         self._data = data
         if isinstance(data, tuple):
             self._data = list(data)
@@ -94,6 +95,23 @@ class OPCUAInfoNode:
         self._children.append(child)
         self._column_count = max(child.column_count(), self._column_count)
 
+    def get_children(self):
+        return self._children
+
+    def get_data(self):
+        return self._data
+
+    def get_all_children_data(self, a=[], d=[]):
+        all_children = a
+        children_data = d
+        for child in self._children:
+            if child.child_count() == 0:
+                children_data.append(child.get_data())
+                all_children.append(child)
+            else:
+                child.get_all_children_data(all_children, children_data)
+        return children_data
+
     def __del__(self):
         print('NODE DELETED')
 
@@ -112,8 +130,9 @@ class OPCUAInfoModel(QtCore.QAbstractItemModel):
 
     def removeRows(self, row: int, count: int, parent) -> bool:
         self.beginRemoveRows(QModelIndex(), row, row + count)
-        # This removes the item from the tree, but need to remove timers, and OPC nodes
-        del self._root._children[row]
+        children_data = self._root.get_children()[row].get_all_children_data()
+        [x[2].remove_function_by_name(x[1].nodeid.Identifier) for x in children_data]
+        del self._root.get_children()[row]
         self.endRemoveRows()
         return True
 
@@ -157,6 +176,7 @@ class OPCUAInfoModel(QtCore.QAbstractItemModel):
             return node.data(index.column())
         return None
 
+    @staticmethod
     def get_data_node(self, index):
         if not index.isValid():
             return None

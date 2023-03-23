@@ -32,7 +32,7 @@ class ValueFunction:
 
     def get_full_path(self):
         if self.device is not None:
-            return self.device.name + '/' + self.path
+            return '[' + self.device.name + ']' + self.path
         return ''
 
     def evaluate(self):
@@ -106,6 +106,13 @@ class ValueFunction:
     def functions():
         return sorted(['valuelist', 'weightedlist', 'rampstep', 'triangle', 'rampperiodic', 'square', 'randomsquare',
                        'sin', 'cos', 'ramprandom'])
+
+    def __eq__(self, other):
+        if isinstance(other, ValueFunction):
+            return self.get_full_path() == other.get_full_path()
+        elif isinstance(other, str):
+            return self.get_full_path() == other
+        return False
 
 
 class ValueList(ValueFunction):

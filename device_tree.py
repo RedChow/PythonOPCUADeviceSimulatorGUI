@@ -1,12 +1,14 @@
 import opcua
 from PySide6 import QtCore, QtWidgets, Qt
-from PySide6.QtGui import QContextMenuEvent, QAction, Qt
-from PySide6.QtCore import QModelIndex
+from PySide6.QtGui import QContextMenuEvent, QAction
+from PySide6.QtCore import Signal
 import qtree_node_model
 from opcua_server import OPCUAServer, OPCDevice
 
 
 class DeviceTree(QtWidgets.QTreeView):
+    remove_function = Signal(str)
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setModel(qtree_node_model.OPCUAInfoModel([]))
@@ -57,7 +59,6 @@ class DeviceTree(QtWidgets.QTreeView):
         if len(selected_indexes_list) == 0:
             return
         if isinstance(selected_indexes_list[0], OPCDevice):
-            # TODO: the following lines are correct, but we need to remove all references in the timers
             selected_indexes_list[0].delete_all()
             self.model().removeRows(indices[0][0], 1, self)
 

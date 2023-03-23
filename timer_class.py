@@ -55,5 +55,17 @@ class OPCTimer(QTimer):
         for x in removal_functions:
             self.functions.remove(x)
 
+    def remove_function_by_name(self, function_name):
+        try:
+            i = self.functions.index(function_name)
+        except ValueError:
+            pass
+        else:
+            del self.functions[i]
+
     def __eq__(self, other):
-        return self.name == other
+        if isinstance(other, str):
+            return self.name == other
+        elif isinstance(other, OPCTimer):
+            return self.name == other.name
+        return False
