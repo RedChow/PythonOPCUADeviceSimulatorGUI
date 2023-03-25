@@ -177,7 +177,7 @@ class OPCUAInfoModel(QtCore.QAbstractItemModel):
         return None
 
     @staticmethod
-    def get_data_node(self, index):
+    def get_data_node(index):
         if not index.isValid():
             return None
         node = index.internalPointer()

@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowTitle("OPC-UA Devices Simulator")
 
         self.opcua_server = OPCUAServer()
         self.ui.pushButtonStartOPCUAServer.pressed.connect(self.start_opcua_server)
@@ -35,6 +36,7 @@ class MainWindow(QMainWindow):
 
         self.ui.actionAdd_Directory.triggered.connect(self.populate_treeview_directory)
         self.ui.actionAdd_File.triggered.connect(self.populate_treeview_file)
+        self.ui.pushButtonAddDevice.clicked.connect(self.ui.devicesTreeView.add_device)
 
     def opc_server_feedback(self):
         if self.opcua_server.server_started:
@@ -97,6 +99,8 @@ class MainWindow(QMainWindow):
                 self.populate_variable_treeview(file_name, False)
 
     def populate_variable_treeview(self, url, is_directory):
+        # TODO: Make this a function that accepts paths and nodes instead of url; parse file/directory in appropriate
+        # TODO: functions above.
         fsp = xml_parsing_library.XMLParser(self.opcua_server)
         if is_directory:
             fsp.parse_directory(url)

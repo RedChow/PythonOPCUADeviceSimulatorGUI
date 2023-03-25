@@ -51,25 +51,15 @@ class OPCDevice:
     def add_variable(self, full_path, default_value, data_type, writable=True, timer=None):
         folder_path, name = self.parse_variable_path(full_path)
         if folder_path and name:
-            folder_parts = folder_path.split('/')
-            """
-            variable = self.opc_folders[folder_path].add_variable('ns=2;s=[{0}]{1}/{2}'.format(self.name,
-                                                                  folder_parts[-1], name), name,
-                                                                  default_value, data_type)
-            """
-            # print(self.name, folder_path, name)
             variable = self.opc_folders[folder_path].add_variable('ns=2;s=[{0}]{1}/{2}'.format(self.name,
                                                                   folder_path, name), name,
                                                                   default_value, data_type)
-            # item = QTreeWidgetItem([name])
-            # self.qtree_widget_items[folder_path].addChild(item)
             node = OPCUAInfoNode([name, variable, timer, ''])
             self.qtree_widget_items[folder_path].add_child(node)
 
             if writable:
                 variable.set_writable()
         else:
-            # print(self.name, name)
             variable = self.var_object.add_variable('ns=2;s=[{0}]{1}'.format(self.name, name), name, default_value,
                                                     data_type)
             self.qtree_widget_items[name] = OPCUAInfoNode([name, variable, timer, ''])
@@ -81,13 +71,9 @@ class OPCDevice:
     def parse_variable_path(self, path):
         path_parts = path.split('/')
         if len(path_parts) == 1:
-            # self.qtree_widget_items[path] = QTreeWidgetItem([path])
-            # self.qtree_widget_items[path] = OPCUAInfoNode(path)
             return '', path
         if path_parts[0] not in self.opc_folders:
             self.opc_folders[path_parts[0]] = self.var_object.add_folder(self.idx, path_parts[0])
-            # self.qtree_widget_items[path_parts[0]] = QTreeWidgetItem([path_parts[0]])
-            # self.qtree_widget_items[path_parts[0]] = OPCUAInfoNode(path_parts[0])
             self.qtree_widget_items[path_parts[0]] = OPCUAInfoNode(self.opc_folders[path_parts[0]])
         for i, current in enumerate(path_parts[1:-1]):
             base = '/'.join(path_parts[0:i+1])
@@ -98,11 +84,6 @@ class OPCDevice:
                 node = OPCUAInfoNode(self.opc_folders[new_path])
                 self.qtree_widget_items[base].add_child(node)
                 self.qtree_widget_items[new_path] = node
-                """
-                item = QTreeWidgetItem([current])
-                self.qtree_widget_items[base].addChild(item)
-                self.qtree_widget_items[new_path] = item
-                """
         return '/'.join(path_parts[:-1]), path_parts[-1]
 
     def set_value(self, path, value):

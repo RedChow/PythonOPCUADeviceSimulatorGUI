@@ -29,13 +29,13 @@ class XMLParser:
 
     def parse_directory(self, directory_path):
         for self.pathname in sorted(glob.glob(directory_path + '/*.xml')):
-            # document = etree.parse(self.pathname)
-            # self.parse_file(document)
-            # print(self.pathname)
             self.parse_file(self.pathname)
 
     def parse_file(self, file_path):
         xml = etree.parse(file_path)
+        self.parse_xml(file_path, xml)
+
+    def parse_xml(self, file_path, xml):
         # Get timers first since variables depend on having a timer defined
         for node in xml.xpath("//timers/timer"):
             self.parse_timer_node(node, file_path)
@@ -53,7 +53,6 @@ class XMLParser:
             self.recursive_parse(node, '//device', device_name, device_name)
             if self.opcua_server is not None:
                 device_node = OPCUAInfoNode(self.opc_device)
-                # print(device_node)
                 for p in self.opc_device.qtree_widget_items:
                     if self.opc_device.qtree_widget_items[p].parent() is None:
                         device_node.add_child(self.opc_device.qtree_widget_items[p])
@@ -131,7 +130,6 @@ class XMLParser:
             except IndexError:
                 # logger.warning(f"No function defined. {func_arg}...{func_dict}")
                 pass
-        # print(variable_name, variable_timer, function_parameters, function_type)
         f = None
         try:
             v_path = root_path + '/' + variable_name
@@ -213,7 +211,6 @@ class XMLParser:
             logger.warning(f"Error in parsing name, datatype, timer, or function elements in file "
                            f"{self.pathname}. Discarding variable.")
             return
-        # print(variable_name, variable_timer, variable_datatype)
         try:
             next_node = node.findall('function')[0]
         except IndexError:
@@ -235,23 +232,7 @@ class XMLParser:
             root_path = path_tag
         if self.opcua_server is not None:
             self.parse_and_create_function(next_node, variable_name, variable_datatype_ua, variable_timer, root_path)
-            """
-            try:
-                self.parse_and_create_function(node.findall('function')[0], variable_name, variable_datatype_ua,
-                                           variable_timer, root_path)
-            except IndexError:
-                logger.warning(f"No function defined for {variable_name} in {self.pathname}. Variable will not be"
-                               f" used.")
-            """
         else:
-            """
-            try:
-                self.parse_function_node(node.findall('function')[0], variable_name, variable_datatype, variable_timer,
-                                     root_path)
-            except IndexError:
-                logger.warning(f"No function defined for {variable_name} in {self.pathname}. Variable will not be"
-                               f" used.")
-            """
             self.parse_function_node(next_node, variable_name, variable_datatype_ua, variable_timer, root_path)
 
     def parse_function_node(self, node, variable_name, variable_datatype, variable_timer, root_path):
@@ -277,34 +258,20 @@ class XMLParser:
         self.device_model_data.append(function_data)
 
     def recursive_parse(self, node, x_path, p_name, root_path):
-        # print(node, p_name, f"{x_path}[@name={p_name}]", root_path)
         for root_node in node.xpath(f"{x_path}[@name='{p_name}']"):
-            # print('root_node', root_node)
             for child in root_node.getchildren():
                 if child.tag == 'folder':
                     self.recursive_parse(child, f"{x_path}[@name='{p_name}']" + '//folder', child.attrib.get('name'), root_path + '/' + child.attrib.get('name'))
                 elif child.tag == 'variable':
                     self.parse_variable_node(child, root_path)
-                    # print('after parse_variable_node', p_name, root_path)
 
 
 class XMLCreator:
     def __init__(self, full_path):
         self.pathname = full_path
 
-    def write_data_to_file(self, timers, devices):
-        """
-        :param timers:
-            list of dictionaries that have keys 'name', 'type', and either 'timeout' or 'min' and 'max'
-        :param devices:
-            list dictionaries with keys 'name' and 'variables'
-            NOTE: 'variables' is a dictionary with keys 'path', 'function', 'datatype', 'timer', 'func_arg_1',
-                'func_arg_2', 'func_arg_3', 'func_arg_4', 'func_arg_5'
-                The func_arg_n will depend on the function.
-        :return:
-            True if file was written with no exceptions
-            False otherwise
-        """
+    @staticmethod
+    def _return_xml(timers, devices):
         document = etree.Element("simulator")
         sub_element_timers = etree.SubElement(document, "timers")
         for timer in timers:
@@ -338,12 +305,31 @@ class XMLCreator:
                             func_element = etree.SubElement(function_element, f"{func_dict[func_arg]}")
                             func_element.text = f"{variable[func_arg]}"
             except KeyError:
-                return False
+                return ''
+        return etree.ElementTree(document)
+
+    def write_data_to_file(self, timers, devices):
+        """
+        :param timers:
+            list of dictionaries that have keys 'name', 'type', and either 'timeout' or 'min' and 'max'
+        :param devices:
+            list dictionaries with keys 'name' and 'variables'
+            NOTE: 'variables' is a dictionary with keys 'path', 'function', 'datatype', 'timer', 'func_arg_1',
+                'func_arg_2', 'func_arg_3', 'func_arg_4', 'func_arg_5'
+                The func_arg_n will depend on the function.
+        :return:
+            True if file was written with no exceptions
+            False otherwise
+        """
         try:
-            root = etree.ElementTree(document)
+            root = self._return_xml(timers, devices)
             root.write(f'{self.pathname}', pretty_print=True, xml_declaration=True, encoding="utf-8")
         except Exception as e:
             logger.error(f"Error writing to {self.pathname}. Error message: {e.message}")
             return False
         else:
             return True
+
+    def create_xml_document(self, timers, devices):
+        root = self._return_xml(timers, devices)
+        return root
