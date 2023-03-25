@@ -145,6 +145,33 @@ class Ui_MainWindow(object):
 
         self.dockWidget_4.setWidget(self.dockWidgetContents_4)
         MainWindow.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget_4)
+        self.dockWidget_5 = QDockWidget(MainWindow)
+        self.dockWidget_5.setObjectName(u"dockWidget_5")
+        self.dockWidgetContents_5 = QWidget()
+        self.dockWidgetContents_5.setObjectName(u"dockWidgetContents_5")
+        self.verticalLayout_5 = QVBoxLayout(self.dockWidgetContents_5)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.tableViewTimers = QTableView(self.dockWidgetContents_5)
+        self.tableViewTimers.setObjectName(u"tableViewTimers")
+
+        self.verticalLayout_5.addWidget(self.tableViewTimers)
+
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_3)
+
+        self.pushButtonAddTimer = QPushButton(self.dockWidgetContents_5)
+        self.pushButtonAddTimer.setObjectName(u"pushButtonAddTimer")
+
+        self.horizontalLayout_4.addWidget(self.pushButtonAddTimer)
+
+
+        self.verticalLayout_5.addLayout(self.horizontalLayout_4)
+
+        self.dockWidget_5.setWidget(self.dockWidgetContents_5)
+        MainWindow.addDockWidget(Qt.LeftDockWidgetArea, self.dockWidget_5)
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menuFile.addAction(self.actionTimer_and_Device_Editor)
@@ -169,5 +196,6 @@ class Ui_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Server Status", None))
         self.labelIsOPCUAServerRunning.setText(QCoreApplication.translate("MainWindow", u"Not Running", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.pushButtonAddTimer.setText(QCoreApplication.translate("MainWindow", u"Add Timer", None))
     # retranslateUi
 
