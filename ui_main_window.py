@@ -158,15 +158,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_4.addItem(self.horizontalSpacer_3)
-
-        self.pushButtonAddTimer = QPushButton(self.dockWidgetContents_5)
-        self.pushButtonAddTimer.setObjectName(u"pushButtonAddTimer")
-
-        self.horizontalLayout_4.addWidget(self.pushButtonAddTimer)
-
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_4)
 
@@ -189,13 +180,12 @@ class Ui_MainWindow(object):
         self.actionAdd_Directory.setText(QCoreApplication.translate("MainWindow", u"Add Directory", None))
         self.actionAdd_File.setText(QCoreApplication.translate("MainWindow", u"Add File", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
-        self.pushButtonAddDevice.setText(QCoreApplication.translate("MainWindow", u"Add Device", None))
+        self.pushButtonAddDevice.setText(QCoreApplication.translate("MainWindow", u"Add New Device", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Server Address:", None))
         self.lineEditOPCUAServerAddress.setText(QCoreApplication.translate("MainWindow", u"opc.tcp://0.0.0.0:4840", None))
         self.pushButtonStartOPCUAServer.setText(QCoreApplication.translate("MainWindow", u"Start Server", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Server Status", None))
         self.labelIsOPCUAServerRunning.setText(QCoreApplication.translate("MainWindow", u"Not Running", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.pushButtonAddTimer.setText(QCoreApplication.translate("MainWindow", u"Add Timer", None))
     # retranslateUi
 

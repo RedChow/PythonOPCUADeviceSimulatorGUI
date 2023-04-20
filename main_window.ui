@@ -63,7 +63,7 @@
        <item>
         <widget class="QPushButton" name="pushButtonAddDevice">
          <property name="text">
-          <string>Add Device</string>
+          <string>Add New Device</string>
          </property>
         </widget>
        </item>
@@ -174,28 +174,7 @@
       <widget class="QTableView" name="tableViewTimers"/>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonAddTimer">
-         <property name="text">
-          <string>Add Timer</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <layout class="QHBoxLayout" name="horizontalLayout_4"/>
      </item>
     </layout>
    </widget>

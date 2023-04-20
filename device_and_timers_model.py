@@ -21,7 +21,10 @@ class DevicesModel(QAbstractTableModel):
     def data(self, index, role: int = ...):
         if role == Qt.DisplayRole:
             if index.column() == 2:
-                return self.devices_data[index.row()][index.column()].name
+                column_data = self.devices_data[index.row()][index.column()]
+                if isinstance(column_data, str):
+                    return ''
+                return column_data.name
             return self.devices_data[index.row()][index.column()]
         elif role == Qt.ToolTipRole:
             if index.column() == 4:
@@ -94,7 +97,7 @@ class DevicesModel(QAbstractTableModel):
         return True
 
     def add_device(self):
-        self.devices_data.append(['']*len(self.devices_data[0]))
+        self.devices_data.append(['']*len(self.headers))
 
 
 class DeviceDelegate(QStyledItemDelegate):
@@ -143,6 +146,7 @@ class DeviceDelegate(QStyledItemDelegate):
 
     def setModelData(self, editor, model, index) -> None:
         if index.column() == 0:
+            # Get that backslash nonsense out of here
             model.setData(index, editor.text().replace('\\', '/'))
         elif index.column() in [1, 5, 6, 7, 8, 9]:
             model.setData(index, editor.text())
@@ -179,9 +183,10 @@ class TimersModel(QAbstractTableModel):
             elif timer_type == 'periodic':
                 if index.column() in [0, 1, 4]:
                     return self.timer_data[index.row()][index.column()]
-                #elif index.column() == 4:
-                #    return float(self.timer_data[index.row()][4])/1000
                 return ''
+            else:
+                if 0 <= index.column() <= 4:
+                    return self.timer_data[index.row()][index.column()]
         elif role == Qt.BackgroundRole:
             timer_type = self.timer_data[index.row()][1]
             if timer_type == 'random':
@@ -215,14 +220,13 @@ class TimersModel(QAbstractTableModel):
                 elif section == 1:
                     return "Type"
                 elif section == 2:
-                    return "Random Min"
+                    return "Random Min (Sec)"
                 elif section == 3:
-                    return "Random Max"
+                    return "Random Max (Sec)"
                 elif section == 4:
-                    return "Periodic Timeout"
+                    return "Periodic Timeout (Sec)"
 
     def setData(self, index, value, role: int = ...) -> bool:
-        print(index.row(), index.column(), value, role)
         if index.isValid() and 0 <= index.row() < len(self.timer_data):
             if index.column() == 0:
                 self.timer_data[index.row()][0] = value
@@ -232,7 +236,8 @@ class TimersModel(QAbstractTableModel):
         return True
 
     def add_timer(self):
-        self.timer_data.append(['']*len(self.timer_data[0]))
+        # self.timer_data.append(['']*len(self.timer_data[0]))
+        self.timer_data.append(['']*5)
 
 
 class TimerDelegate(QStyledItemDelegate):

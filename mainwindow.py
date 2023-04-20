@@ -14,6 +14,7 @@ import devices_and_timer_editor
 from logging import config
 import logging
 import time
+import lxml
 
 config.fileConfig("log_conf.conf")
 logger = logging.getLogger('main')
@@ -36,7 +37,8 @@ class MainWindow(QMainWindow):
 
         self.ui.actionAdd_Directory.triggered.connect(self.populate_treeview_directory)
         self.ui.actionAdd_File.triggered.connect(self.populate_treeview_file)
-        self.ui.pushButtonAddDevice.clicked.connect(self.ui.devicesTreeView.add_device)
+        # self.ui.pushButtonAddDevice.clicked.connect(self.ui.devicesTreeView.add_device)
+        self.ui.pushButtonAddDevice.clicked.connect(self.open_device_and_timers_editor)
 
     def opc_server_feedback(self):
         if self.opcua_server.server_started:
@@ -46,7 +48,34 @@ class MainWindow(QMainWindow):
 
     def open_device_and_timers_editor(self):
         self.devices_and_timer_editor = devices_and_timer_editor.MainWindow()
+        self.devices_and_timer_editor.add_device.connect(self.add_device)
         self.devices_and_timer_editor.show()
+
+    @Slot(lxml.etree._ElementTree)
+    def add_device(self, data):
+        """
+        TODO : This is repeated code from another function below. Need to refactor
+        TODO : Done, but need testing before removing this note
+        :param data:
+        :return:
+        """
+        fsp = xml_parsing_library.XMLParser(self.opcua_server)
+        fsp.parse_xml('', data)
+        self.add_parsed_data(fsp)
+
+    def add_parsed_data(self, fsp):
+        for t in fsp.opcua_paths_and_nodes:
+            self.ui.devicesTreeView.add_data(t)
+        removal_timers = []
+        for timer in self.timers:
+            if len(timer.functions) == 0:
+                removal_timers.append(timer)
+        for timer in removal_timers:
+            self.timers.remove(timer)
+        for timer in fsp.timer_instances:
+            if timer not in self.timers:
+                self.timers.append(timer)
+        self.start_timers()
 
     def start_timers(self):
         for i, t in enumerate(self.timers):
@@ -58,7 +87,6 @@ class MainWindow(QMainWindow):
     @Slot(int)
     def timer_factory(self, index):
         t = self.timers[index]
-        # print(t.functions)
         t.evaluate_functions()
         if t.is_random:
             new_start = t.set_random_timeout()
@@ -101,23 +129,13 @@ class MainWindow(QMainWindow):
     def populate_variable_treeview(self, url, is_directory):
         # TODO: Make this a function that accepts paths and nodes instead of url; parse file/directory in appropriate
         # TODO: functions above.
+        # TODO: Done, but need testing before removing this note
         fsp = xml_parsing_library.XMLParser(self.opcua_server)
         if is_directory:
             fsp.parse_directory(url)
         else:
             fsp.parse_file(url)
-        for t in fsp.opcua_paths_and_nodes:
-            self.ui.devicesTreeView.add_data(t)
-        removal_timers = []
-        for timer in self.timers:
-            if len(timer.functions) == 0:
-                removal_timers.append(timer)
-        for timer in removal_timers:
-            self.timers.remove(timer)
-        for timer in fsp.timer_instances:
-            if timer not in self.timers:
-                self.timers.append(timer)
-        self.start_timers()
+        self.add_parsed_data(fsp)
 
 
 if __name__ == "__main__":

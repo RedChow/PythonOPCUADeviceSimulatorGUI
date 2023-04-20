@@ -32,19 +32,21 @@ class Ui_DevicesAndTimersMainWindow(object):
         self.actionOpen_File.setObjectName(u"actionOpen_File")
         self.centralwidget = QWidget(DevicesAndTimersMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout_3 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_4 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.splitter = QSplitter(self.centralwidget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Vertical)
-        self.widget = QWidget(self.splitter)
-        self.widget.setObjectName(u"widget")
-        self.verticalLayout = QVBoxLayout(self.widget)
+        self.layoutWidget = QWidget(self.splitter)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.verticalLayout = QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.label = QLabel(self.widget)
+        self.label = QLabel(self.layoutWidget)
         self.label.setObjectName(u"label")
 
         self.horizontalLayout.addWidget(self.label)
@@ -56,7 +58,7 @@ class Ui_DevicesAndTimersMainWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.tableViewTimers = QTableView(self.widget)
+        self.tableViewTimers = QTableView(self.layoutWidget)
         self.tableViewTimers.setObjectName(u"tableViewTimers")
 
         self.verticalLayout.addWidget(self.tableViewTimers)
@@ -67,7 +69,7 @@ class Ui_DevicesAndTimersMainWindow(object):
 
         self.horizontalLayout_4.addItem(self.horizontalSpacer_2)
 
-        self.pushButtonAddTimer = QPushButton(self.widget)
+        self.pushButtonAddTimer = QPushButton(self.layoutWidget)
         self.pushButtonAddTimer.setObjectName(u"pushButtonAddTimer")
 
         self.horizontalLayout_4.addWidget(self.pushButtonAddTimer)
@@ -75,15 +77,15 @@ class Ui_DevicesAndTimersMainWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_4)
 
-        self.splitter.addWidget(self.widget)
-        self.widget1 = QWidget(self.splitter)
-        self.widget1.setObjectName(u"widget1")
-        self.verticalLayout_2 = QVBoxLayout(self.widget1)
+        self.splitter.addWidget(self.layoutWidget)
+        self.layoutWidget1 = QWidget(self.splitter)
+        self.layoutWidget1.setObjectName(u"layoutWidget1")
+        self.verticalLayout_2 = QVBoxLayout(self.layoutWidget1)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.label_2 = QLabel(self.widget1)
+        self.label_2 = QLabel(self.layoutWidget1)
         self.label_2.setObjectName(u"label_2")
 
         self.horizontalLayout_3.addWidget(self.label_2)
@@ -95,7 +97,7 @@ class Ui_DevicesAndTimersMainWindow(object):
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
 
-        self.tableViewDevices = QTableView(self.widget1)
+        self.tableViewDevices = QTableView(self.layoutWidget1)
         self.tableViewDevices.setObjectName(u"tableViewDevices")
 
         self.verticalLayout_2.addWidget(self.tableViewDevices)
@@ -106,7 +108,7 @@ class Ui_DevicesAndTimersMainWindow(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
 
-        self.pushButtonAddVariable = QPushButton(self.widget1)
+        self.pushButtonAddVariable = QPushButton(self.layoutWidget1)
         self.pushButtonAddVariable.setObjectName(u"pushButtonAddVariable")
 
         self.horizontalLayout_2.addWidget(self.pushButtonAddVariable)
@@ -114,9 +116,31 @@ class Ui_DevicesAndTimersMainWindow(object):
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
 
-        self.splitter.addWidget(self.widget1)
+        self.splitter.addWidget(self.layoutWidget1)
 
         self.verticalLayout_3.addWidget(self.splitter)
+
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.pushButtonAddToDeviceTree = QPushButton(self.centralwidget)
+        self.pushButtonAddToDeviceTree.setObjectName(u"pushButtonAddToDeviceTree")
+
+        self.horizontalLayout_5.addWidget(self.pushButtonAddToDeviceTree)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_5.addItem(self.horizontalSpacer_5)
+
+        self.pushButtonSaveToFile = QPushButton(self.centralwidget)
+        self.pushButtonSaveToFile.setObjectName(u"pushButtonSaveToFile")
+
+        self.horizontalLayout_5.addWidget(self.pushButtonSaveToFile)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_5)
+
+
+        self.verticalLayout_4.addLayout(self.verticalLayout_3)
 
         DevicesAndTimersMainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(DevicesAndTimersMainWindow)
@@ -147,6 +171,8 @@ class Ui_DevicesAndTimersMainWindow(object):
         self.pushButtonAddTimer.setText(QCoreApplication.translate("DevicesAndTimersMainWindow", u"Add Timer", None))
         self.label_2.setText(QCoreApplication.translate("DevicesAndTimersMainWindow", u"Variables", None))
         self.pushButtonAddVariable.setText(QCoreApplication.translate("DevicesAndTimersMainWindow", u"Add Variable", None))
+        self.pushButtonAddToDeviceTree.setText(QCoreApplication.translate("DevicesAndTimersMainWindow", u"Add to Device Tree", None))
+        self.pushButtonSaveToFile.setText(QCoreApplication.translate("DevicesAndTimersMainWindow", u"Save to File", None))
         self.menuFile.setTitle(QCoreApplication.translate("DevicesAndTimersMainWindow", u"File", None))
     # retranslateUi
 

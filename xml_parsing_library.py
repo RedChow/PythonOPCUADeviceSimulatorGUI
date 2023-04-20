@@ -333,3 +333,7 @@ class XMLCreator:
     def create_xml_document(self, timers, devices):
         root = self._return_xml(timers, devices)
         return root
+
+    def create_xml_string(self, timers, devices):
+        root = self._return_xml(timers, devices)
+        return etree.tostring(root)
