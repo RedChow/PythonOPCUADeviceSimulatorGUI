@@ -113,7 +113,7 @@ class OPCUAInfoNode:
         return children_data
 
     def __del__(self):
-        print('NODE DELETED')
+        pass
 
 
 class OPCUAInfoModel(QtCore.QAbstractItemModel):
@@ -188,7 +188,7 @@ class OPCUAInfoModel(QtCore.QAbstractItemModel):
         self.layoutChanged.emit()
 
     def headerData(self, section: int, orientation: QtCore.Qt.Orientation, role: int = ...):
-        headers = ['Device', 'Variable', 'Timer', 'Next Update']
+        headers = ['Device', 'Value', 'Timer', 'Next Update']
         if section < len(headers) and role == QtCore.Qt.DisplayRole:
             return headers[section]
 

@@ -1,12 +1,7 @@
-cffi==1.15.1
-cryptography==39.0.1
 lxml==4.9.2
 opcua==0.98.13
-pycparser==2.21
+pyqtgraph==0.13.3
 PySide6==6.4.2
-PySide6-Addons==6.4.2
-PySide6-Essentials==6.4.2
-python-dateutil==2.8.2
-pytz==2022.7.1
-shiboken6==6.4.2
-six==1.16.0
+PySide6==6.5.0
+PySide6_Addons==6.4.2
+PySide6_Essentials==6.4.2

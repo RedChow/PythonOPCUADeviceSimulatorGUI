@@ -10,7 +10,7 @@
 		<timer>
 			<name>Periodic5sec</name>
 			<type>periodic</type>
-			<timeout>20</timeout>
+			<timeout>5</timeout>
 		</timer>
 	</timers>
 	<device name="maiden1">

@@ -5,15 +5,18 @@ from opcua_server import OPCUAServer
 import xml_parsing_library
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PySide6.QtCore import Slot, QModelIndex
+import pyqtgraph as pg
 import functools
 # Important:
 # You need to run the following command to generate the ui_form.py file
 # pyside6-uic main_window.ui -o ui_main_window.py
+# git diff --name-only
 from ui_main_window import Ui_MainWindow
 import devices_and_timer_editor
+import pyqtgraph_history
+import value_function_classes
 from logging import config
 import logging
-import time
 import lxml
 
 config.fileConfig("log_conf.conf")
@@ -39,6 +42,22 @@ class MainWindow(QMainWindow):
         self.ui.actionAdd_File.triggered.connect(self.populate_treeview_file)
         # self.ui.pushButtonAddDevice.clicked.connect(self.ui.devicesTreeView.add_device)
         self.ui.pushButtonAddDevice.clicked.connect(self.open_device_and_timers_editor)
+
+        # self.ui.widgetPlotWidget.plot([1, 2, 3], [3, 4, 5])
+        axis = pg.DateAxisItem(orientation='bottom')
+        self.ui.widgetPlotWidget.setAxisItems({"bottom": axis})
+        self.pyqtgraph_history_object = pyqtgraph_history.PyQtGraphHistory(self.ui.widgetPlotWidget)
+
+        self.ui.devicesTreeView.add_function.connect(self.add_function_to_plot)
+        self.ui.devicesTreeView.remove_function.connect(self.remove_function_from_plot)
+
+    @Slot(value_function_classes.ValueFunction)
+    def remove_function_from_plot(self, value_function):
+        self.pyqtgraph_history_object.remove_function(value_function)
+
+    @Slot(value_function_classes.ValueFunction)
+    def add_function_to_plot(self, value_function):
+        self.pyqtgraph_history_object.add_function(value_function)
 
     def opc_server_feedback(self):
         if self.opcua_server.server_started:
@@ -87,7 +106,7 @@ class MainWindow(QMainWindow):
     @Slot(int)
     def timer_factory(self, index):
         t = self.timers[index]
-        t.evaluate_functions()
+        x_values, y_values = t.evaluate_functions()
         if t.is_random:
             new_start = t.set_random_timeout()
             t.start(new_start)

@@ -1,14 +1,18 @@
 """
 random.sample(range(1, 7), k=random.randint(6, 17), counts=[10, 2, 2, 2, 2, 2])
 """
+from PySide6.QtCore import Signal, QObject
 import math
 import random
 import time
 from collections import deque
 
 
-class ValueFunction:
+class ValueFunction(QObject):
+    new_data = Signal(str)
+
     def __init__(self, device, path, y_min, y_max, period, repeat=True, historize=False):
+        super(ValueFunction, self).__init__()
         """
         :param device:
         """
@@ -29,6 +33,20 @@ class ValueFunction:
         if self.device is not None:
             if self.device.name in self.path:
                 self.path = self.path[self.path.index('/')+1:]
+        self.x_values = []
+        self.y_values = []
+        self.show_plot = False
+        self.number_of_history_hours = 2
+
+    def get_plot_values(self):
+        now = time.time()
+        then = now - self.number_of_history_hours*60*60
+        new_x_values = [x for x in self.x_values if x > then]
+        new_y_values = self.y_values[len(self.y_values) - len(new_x_values):]
+        return new_x_values, new_y_values
+
+    def set_show_plot(self, new_value):
+        self.show_plot = new_value
 
     def get_full_path(self):
         if self.device is not None:
@@ -133,6 +151,10 @@ class ValueList(ValueFunction):
         if len(self.deque) > 0:
             v = self.deque.popleft()
             self.device.set_value(self.path, v)
+            if self.historize:
+                self.x_values.append(time.time())
+                self.y_values.append(v)
+                self.new_data.emit(self.get_full_path())
         # if we've taken the last one and are set to repeat, set up the deque for the next call
         if len(self.deque) == 0:
             if self.repeat or self.repeated_times < self.period:
@@ -155,6 +177,10 @@ class Triangle(ValueFunction):
 
         t = 2 * (self.y_max - self.y_min) * abs(t/self.period - math.floor(t/self.period + .5)) + self.y_min
         self.device.set_value(self.path, t)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(t)
+            self.new_data.emit(self.get_full_path())
 
 
 class WeightedList(ValueFunction):
@@ -176,7 +202,12 @@ class WeightedList(ValueFunction):
             if not self.repeat:
                 return
             self.times_evaluated = 0
-        self.device.set_value(self.path, random.choice(self.choice_list))
+        v = random.choice(self.choice_list)
+        self.device.set_value(self.path, v)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(v)
+            self.new_data.emit(self.get_full_path())
 
 
 class RampStep(ValueFunction):
@@ -193,9 +224,17 @@ class RampStep(ValueFunction):
             if not self.repeat:
                 return
             self.device.set_value(self.path, self.y_min)
+            if self.historize:
+                self.x_values.append(time.time())
+                self.y_values.append(self.y_min)
+                self.new_data.emit(self.get_full_path())
             return
 
         self.device.set_value(self.path, v + self.period)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(v + self.period)
+            self.new_data.emit(self.get_full_path())
 
 
 class RampRandom(ValueFunction):
@@ -223,9 +262,16 @@ class RampRandom(ValueFunction):
             if not self.repeat:
                 return
             self.device.set_value(self.path, self.y_min)
+            if self.historize:
+                self.x_values.append(time.time())
+                self.y_values.append(self.y_min)
+                self.new_data.emit(self.get_full_path())
             return
-
         self.device.set_value(self.path, new_value)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(new_value)
+            self.new_data.emit(self.get_full_path())
 
 
 class RampPeriodic(ValueFunction):
@@ -244,6 +290,10 @@ class RampPeriodic(ValueFunction):
             self.start = time.time()
         v = t * (self.y_max - self.y_min)/self.period + self.y_min
         self.device.set_value(self.path, v)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(v)
+            self.new_data.emit(self.get_full_path())
 
 
 class Square(ValueFunction):
@@ -259,6 +309,10 @@ class Square(ValueFunction):
             value = 0
         v = self.y_max if math.copysign(1, math.sin(2 * math.pi * value / self.period)) > 0 else self.y_min
         self.device.set_value(self.path, v)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(v)
+            self.new_data.emit(self.get_full_path())
 
 
 class RandomSquare(ValueFunction):
@@ -272,6 +326,10 @@ class RandomSquare(ValueFunction):
                 return
         v = self.y_max if random.random() > .5 else self.y_min
         self.device.set_value(self.path, v)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(v)
+            self.new_data.emit(self.get_full_path())
 
 
 class Sin(ValueFunction):
@@ -298,6 +356,10 @@ class Sin(ValueFunction):
             self.start = time.time()
         v = self.amplitude*math.sin(self.trig_period*t) + self.amplitude + self.y_min
         self.device.set_value(self.path, v)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(v)
+            self.new_data.emit(self.get_full_path())
 
 
 class Cos(ValueFunction):
@@ -324,5 +386,9 @@ class Cos(ValueFunction):
             self.start = time.time()
         v = self.amplitude*math.cos(self.trig_period*t) + self.amplitude + self.y_min
         self.device.set_value(self.path, v)
+        if self.historize:
+            self.x_values.append(time.time())
+            self.y_values.append(v)
+            self.new_data.emit(self.get_full_path())
 
 

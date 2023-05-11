@@ -16,13 +16,13 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QDockWidget, QFrame, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QMainWindow,
-    QMenu, QMenuBar, QPushButton, QSizePolicy,
-    QSpacerItem, QStatusBar, QTableView, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QDockWidget, QHBoxLayout, QHeaderView,
+    QLabel, QLineEdit, QMainWindow, QMenu,
+    QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
+    QStatusBar, QTableView, QVBoxLayout, QWidget)
 
 from device_tree import DeviceTree
+from pyqtgraph import PlotWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -137,11 +137,10 @@ class Ui_MainWindow(object):
         self.dockWidgetContents_4.setObjectName(u"dockWidgetContents_4")
         self.verticalLayout_3 = QVBoxLayout(self.dockWidgetContents_4)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.label_4 = QLabel(self.dockWidgetContents_4)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setFrameShape(QFrame.Box)
+        self.widgetPlotWidget = PlotWidget(self.dockWidgetContents_4)
+        self.widgetPlotWidget.setObjectName(u"widgetPlotWidget")
 
-        self.verticalLayout_3.addWidget(self.label_4)
+        self.verticalLayout_3.addWidget(self.widgetPlotWidget)
 
         self.dockWidget_4.setWidget(self.dockWidgetContents_4)
         MainWindow.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget_4)
@@ -186,6 +185,5 @@ class Ui_MainWindow(object):
         self.pushButtonStartOPCUAServer.setText(QCoreApplication.translate("MainWindow", u"Start Server", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Server Status", None))
         self.labelIsOPCUAServerRunning.setText(QCoreApplication.translate("MainWindow", u"Not Running", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
     # retranslateUi
 

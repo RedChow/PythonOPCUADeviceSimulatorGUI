@@ -152,14 +152,7 @@
    <widget class="QWidget" name="dockWidgetContents_4">
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="QLabel" name="label_4">
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
+      <widget class="PlotWidget" name="widgetPlotWidget" native="true"/>
      </item>
     </layout>
    </widget>
@@ -200,6 +193,12 @@
    <class>DeviceTree</class>
    <extends>QTreeView</extends>
    <header location="global">device_tree.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">pyqtgraph</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

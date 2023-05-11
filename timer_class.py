@@ -43,17 +43,29 @@ class OPCTimer(QTimer):
     def add_function(self, function):
         self.functions.append(function)
 
+    def get_function(self, path):
+        try:
+            i = self.functions.index(path)
+        except ValueError:
+            logger.info(f"Function with path {path} not found.")
+        else:
+            return self.functions[i]
+
     def evaluate_functions(self):
-        # [x.evaluate() for x in self.functions]
         removal_functions = []
+        x_values, y_values = [], []
         for x in self.functions:
             try:
                 x.evaluate()
+                temp_x, temp_y = x.get_plot_values()
+                x_values.append(temp_x)
+                y_values.append(temp_y)
             except Exception as e:
                 logger.info(f"Removing function due to not being able to evaluate. Error info: {e}.")
                 removal_functions.append(x)
         for x in removal_functions:
             self.functions.remove(x)
+        return x_values, y_values
 
     def remove_function_by_name(self, function_name):
         try:
