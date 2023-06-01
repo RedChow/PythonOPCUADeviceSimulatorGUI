@@ -196,6 +196,7 @@ each function.
 * Fill in pane above the graph to include information about the selected variable, 
 such as function, next evaluation, data type, and other node info.
 * Allow user to set plot options such as color.
+* Add styling to all windows.
 
 ## Disclaimer
 This still needs a lot of work. The GUI is operational and allows for adding/deleting 
